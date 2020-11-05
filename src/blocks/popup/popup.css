@@ -1,7 +1,10 @@
 @import url('./__container/popup__container.css');
 @import url('./__close/popup__close.css');
+@import url('./__close/_type/popup__close_type_info.css');
 @import url('./__title/popup__title.css');
 @import url('./__title/_type/popup__title_type_white.css');
+@import url('./__title/_type/popup__title_type_center.css');
+@import url('./__icon/popup__icon.css');
 @import url('./__form/popup__form.css');
 @import url('./__cover/popup__cover.css');
 @import url('./__cover/_type/popup__cover_type_register.css');
@@ -19,6 +22,7 @@
 @import url('./__image/popup__image.css');
 @import url('./__caption/popup__caption.css');
 @import url('./__container/_type/popup__container_type_picture.css');
+@import url('./__container/_type/popup__container_type_info.css');
 @import url('./__input/_type/popup__input_type_error.css');
 @import url('./__error/popup__error.css');
 @import url('./__control/popup__control.css');

@@ -1,7 +1,7 @@
 import React from "react";
 import FormContent from "./FormContent";
 
-const Register = ({isLoading}) => {
+const Register = ({onRegister, isLoading}) => {
   const submitValue = `${isLoading ? `Регистрация...` : `Зарегистрироваться`}`;
   const formName = "register";
   const handleRegisterSubmit = (event, {inputValue}) => {
@@ -10,6 +10,7 @@ const Register = ({isLoading}) => {
       email: inputValue.email,
       password: inputValue.password
     });
+    onRegister();
   }
 
   return (
@@ -18,7 +19,7 @@ const Register = ({isLoading}) => {
         <FormContent handleSubmit={handleRegisterSubmit} formName={formName} submitValue={submitValue}/>
       <a href="#" className="register__link">Уже зарегистрированы? Войти</a>
     </section>
-  )
+  );
 }
 
 export default Register;

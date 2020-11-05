@@ -11,6 +11,7 @@ import DeleteConfirmPopup from "./DeleteConfirmPopup";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/Api";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
+import InfoTooltip from "./InfoTooltip";
 
 const App = () => {
     const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
@@ -85,6 +86,10 @@ const App = () => {
         setSelectedCard(card);
     };
 
+    const handleTooltipPopupOpenClick = () => {
+        setIsRegister(true);
+    };
+
     const handleCardClick = (card) => {
         setImagePopupOpen(true);
         setSelectedCard(card);
@@ -97,6 +102,7 @@ const App = () => {
         setDeletePopupOpen(false);
         setSelectedCard(false);
         setImagePopupOpen(false);
+        setIsRegister(false);
     };
 
     const handleUpdateUser = (userInfo) => {
@@ -150,8 +156,8 @@ const App = () => {
             <div className="page__cover">
                 <CurrentUserContext.Provider value={currentUser}>
                     <Header/>
-                    <Login isLoading={isLoading}/>
-                    <Register isLoading={isLoading}/>
+                    <Login isRegister={isRegister} isLoading={isLoading}/>
+                    <Register onRegister={handleTooltipPopupOpenClick} isLoading={isLoading}/>
                     <Main
                         onEditAvatar={handleEditAvatarClick}
                         onEditProfile={handleEditProfileClick}
@@ -175,6 +181,8 @@ const App = () => {
                                         card={selectedCard} onCardDelete={handleCardDelete} isLoading={isLoading}/>
 
                     <ImagePopup isOpen={isImagePopupOpen} onClose={closeAllPopups} card={selectedCard}/>
+
+                    <InfoTooltip isRegister={isRegister} onClose={closeAllPopups}/>
                 </CurrentUserContext.Provider>
             </div>
         </div>
