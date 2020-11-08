@@ -15,6 +15,7 @@ import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {getToken} from "../utils/token";
 import {Redirect, Route, Switch, useHistory} from 'react-router-dom';
 import ProtectedRoute from "./ProtectedRoute";
+import * as auth from '../auth.js';
 
 const App = () => {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
@@ -28,10 +29,33 @@ const App = () => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const [userData, setUserData] = React.useState({ email: '', password: ''});
   const [isRegister, setIsRegister] = React.useState(false);
   const history = useHistory();
 
+  const tokenCheck = () => {
+    const jwt = getToken();
 
+    if (!jwt) {
+      return;
+    }
+
+    auth.getContent(jwt).then((res) => {
+      if (res) {
+        const userData = {
+          email: res.email,
+          password: res.password,
+        }
+        setLoggedIn(true);
+        setUserData(userData);
+        history.push('/')
+      }
+    });
+  }
+
+  React.useEffect(() => {
+    tokenCheck();
+  }, []);
 
   const handleCardLike = (card) => {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -163,7 +187,7 @@ const App = () => {
       <div className="page">
         <div className="page__cover">
           <CurrentUserContext.Provider value={currentUser}>
-            <Header/>
+            <Header userData={userData}/>
             <Route path="/sing-in">
               <Login isRegister={isRegister} isLoading={isLoading}/>
             </Route>
@@ -196,6 +220,9 @@ const App = () => {
               <ImagePopup isOpen={isImagePopupOpen} onClose={closeAllPopups} card={selectedCard}/>
             </ProtectedRoute>
             <InfoTooltip isRegister={isRegister} onClose={closeAllPopups}/>
+            {/*<Route>*/}
+            {/*  {loggedIn ? <Redirect to="/" /> : <Redirect to="/sing-in" />}*/}
+            {/*</Route>*/}
           </CurrentUserContext.Provider>
         </div>
       </div>

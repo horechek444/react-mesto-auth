@@ -3,7 +3,7 @@ import FormContent from "./FormContent";
 import {Link, useHistory} from 'react-router-dom';
 import * as auth from '../auth.js';
 
-const Register = ({onRegister, isLoading}) => {
+const Register = ({isRegister, isLoading}) => {
   const submitValue = `${isLoading ? `Регистрация...` : `Зарегистрироваться`}`;
   const formName = "register";
 
