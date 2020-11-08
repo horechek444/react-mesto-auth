@@ -1,15 +1,42 @@
 import React from "react";
 import FormContent from "./FormContent";
+import * as auth from '../auth.js';
+import { useHistory } from 'react-router-dom';
 
 const Login = ({isLoading}) => {
   const submitValue = `${isLoading ? `Выполняется вход...` : `Войти`}`;
   const formName = "login";
-  const handleLoginSubmit = (event, {inputValue}) => {
-    event.preventDefault();
-    console.log({
-      email: inputValue.email,
-      password: inputValue.password
-    });
+  const [message, setMessage] = React.useState('');
+  const history = useHistory();
+
+  const [data, setData] = React.useState({
+    email: '',
+    password: '',
+  });
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    const {email, password} = data;
+
+    if (!email|| !password){
+      return;
+    }
+
+    auth.authorize(email, password)
+      .then((data) => {
+        if (!data){
+          setMessage('Что-то пошло не так!')
+        }
+
+        if (data.jwt) {
+          // setToken(data.jwt);
+          // setData({ email: '', password: ''});
+          // setMessage('');
+          // handleLogin(data.user);
+          history.push('/');
+        }
+      })
+      .catch(err => console.log(err));
   }
 
   return (

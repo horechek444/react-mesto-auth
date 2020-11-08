@@ -4,7 +4,7 @@ import useValidation from "../hooks/useValidation";
 const FormContent = ({handleSubmit, formName, submitValue}) => {
   const fields = ['email', 'password'];
 
-  const onSubmit = () => {
+  const onSubmit = ({inputValue}) => {
     handleSubmit({inputValue});
   }
 
