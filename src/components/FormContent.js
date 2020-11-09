@@ -4,8 +4,9 @@ import useValidation from "../hooks/useValidation";
 const FormContent = ({handleSubmit, formName, submitValue}) => {
   const fields = ['email', 'password'];
 
-  const onSubmit = ({inputValue}) => {
-    handleSubmit({inputValue});
+  const onSubmit = (event) => {
+    event.preventDefault();
+    handleSubmit(inputValue);
   }
 
   const {

@@ -28,6 +28,7 @@ const App = () => {
   const [cards, setCards] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const [isTooltipPopupOpen, setTooltipPopupOpen] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [userData, setUserData] = React.useState({ email: '', password: ''});
   const [isRegister, setIsRegister] = React.useState(false);
@@ -48,7 +49,8 @@ const App = () => {
         }
         setLoggedIn(true);
         setUserData(userData);
-        history.push('/')
+        history.push('/');
+        console.log(userData);
       }
     });
   }
@@ -56,6 +58,12 @@ const App = () => {
   React.useEffect(() => {
     tokenCheck();
   }, []);
+
+  const handleLogin = (userData) => {
+    setUserData(userData);
+    setLoggedIn(true);
+    console.log(userData);
+  }
 
   const handleCardLike = (card) => {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -117,14 +125,14 @@ const App = () => {
     setSelectedCard(card);
   };
 
-  const handleTooltipPopupOpenClick = () => {
-    setIsRegister(true);
-  };
-
   const handleCardClick = (card) => {
     setImagePopupOpen(true);
     setSelectedCard(card);
   };
+
+  const handleTooltipPopupClick = () => {
+    setTooltipPopupOpen(true);
+  }
 
   const closeAllPopups = () => {
     setEditAvatarPopupOpen(false);
@@ -133,7 +141,7 @@ const App = () => {
     setDeletePopupOpen(false);
     setSelectedCard(false);
     setImagePopupOpen(false);
-    setIsRegister(false);
+    setTooltipPopupOpen(false);
   };
 
   const handleUpdateUser = (userInfo) => {
@@ -147,9 +155,8 @@ const App = () => {
         console.log(`${err}`);
       })
       .finally(() => {
-        setIsLoading(false)
+        setIsLoading(false);
       })
-
   };
 
   const handleUpdateAvatar = (inputValue) => {
@@ -163,7 +170,7 @@ const App = () => {
         console.log(`${err}`);
       })
       .finally(() => {
-        setIsLoading(false)
+        setIsLoading(false);
       })
   };
 
@@ -178,21 +185,21 @@ const App = () => {
         console.log(`${err}`);
       })
       .finally(() => {
-        setIsLoading(false)
+        setIsLoading(false);
       })
   };
 
   return (
-    <Switch>
       <div className="page">
         <div className="page__cover">
+          <Switch>
           <CurrentUserContext.Provider value={currentUser}>
-            <Header userData={userData}/>
-            <Route path="/sing-in">
-              <Login isRegister={isRegister} isLoading={isLoading}/>
+            <Header isLoading={isLoading} isRegister={isRegister} userData={userData}/>
+            <Route path="/sign-in">
+              <Login handleLogin={handleLogin} isLoading={isLoading}/>
             </Route>
-            <Route path="/sing-up">
-              <Register onRegister={handleTooltipPopupOpenClick} isLoading={isLoading}/>
+            <Route path="/sign-up">
+              <Register onTooltipPopup={handleTooltipPopupClick} isLoading={isLoading}/>
             </Route>
             <ProtectedRoute exact path="/" loggedIn="loggedIn">
               <Main
@@ -218,15 +225,17 @@ const App = () => {
                                   card={selectedCard} onCardDelete={handleCardDelete} isLoading={isLoading}/>
 
               <ImagePopup isOpen={isImagePopupOpen} onClose={closeAllPopups} card={selectedCard}/>
+
             </ProtectedRoute>
-            <InfoTooltip isRegister={isRegister} onClose={closeAllPopups}/>
-            {/*<Route>*/}
-            {/*  {loggedIn ? <Redirect to="/" /> : <Redirect to="/sing-in" />}*/}
-            {/*</Route>*/}
+            <Route>
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+            </Route>
           </CurrentUserContext.Provider>
+          </Switch>
+          <InfoTooltip isRegister={isRegister} isOpen={isTooltipPopupOpen} onClose={closeAllPopups}/>
         </div>
       </div>
-    </Switch>
+
   );
 }
 

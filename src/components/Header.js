@@ -2,24 +2,14 @@ import React from "react";
 import logo from '../images/logo.svg';
 import {Link} from 'react-router-dom';
 
-const Header = ({loggedIn, isRegister, userData}) => {
-  const handleLinkName = (loggedIn, isRegister) => {
-    if (!loggedIn && !isRegister) {
+const Header = ({loggedIn, userData}) => {
+  const handleLinkName = (loggedIn, userData) => {
+    if (!loggedIn && !userData) {
       return "Регистрация";
-    } else if (!loggedIn && isRegister) {
-      return "Войти";
-    } else if (loggedIn) {
+    } else if (loggedIn && userData) {
       return "Выйти";
-    }
-  }
-
-  const handleLink = (loggedIn, isRegister) => {
-    if (!loggedIn) {
-      return "sing-in";
-    } else if (isRegister) {
-      return "sing-up";
-    } else {
-      return "";
+    } else if (!loggedIn) {
+      return "Войти";
     }
   }
 
@@ -29,9 +19,9 @@ const Header = ({loggedIn, isRegister, userData}) => {
         <img className="logo__image" src={logo} alt="Логотип сайта Место"/>
       </a>
       <div className="header__cover">
-        <span className="header__email">{userData.email}</span>
-        <Link to={handleLink}
-              className={`${loggedIn ? `header__link header__link_type_log-out` : `header__link`}`}>{handleLinkName}</Link>
+        <span className={`${loggedIn ? `header__email header__email_type_active` : `header__email`}`}>{userData.email}</span>
+        <Link to={`${loggedIn ? `sign-in` : `sign-up`}`}
+              className={`${loggedIn ? `header__link header__link_type_log-out` : `header__link`}`}>{handleLinkName()}</Link>
       </div>
     </header>
   );

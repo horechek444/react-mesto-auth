@@ -1,9 +1,9 @@
 import {setToken} from "./utils/token";
 
-export const BASE_URL = 'https://api.nomoreparties.co';
+export const BASE_URL = 'https://auth.nomoreparties.co';
 
 export const register = (email, password) => {
-  return fetch(`${BASE_URL}/singup`, {
+  return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -17,11 +17,11 @@ export const register = (email, password) => {
     .then((res) => {
       return res;
     })
-    .catch((err) => console.log(err));
+    .catch(err => console.log(err));
 };
 
 export const authorize = (email, password) => {
-  return fetch(`${BASE_URL}/singin`, {
+  return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
