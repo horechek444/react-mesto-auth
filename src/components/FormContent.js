@@ -6,7 +6,10 @@ const FormContent = ({handleSubmit, formName, submitValue}) => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    handleSubmit(inputValue);
+    handleSubmit({
+      email: inputValue.email,
+      password: inputValue.password,
+    });
   }
 
   const {

@@ -12,7 +12,7 @@ import ImagePopup from "./ImagePopup";
 import InfoTooltip from "./InfoTooltip";
 import api from "../utils/Api";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
-import {getToken} from "../utils/token";
+import {getToken, removeToken, setToken} from "../utils/token";
 import {Redirect, Route, Switch, useHistory} from 'react-router-dom';
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from '../auth.js';
@@ -32,7 +32,13 @@ const App = () => {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [userData, setUserData] = React.useState({ email: '', password: ''});
   const [isRegister, setIsRegister] = React.useState(false);
+  const [email, setEmail] = React.useState('');
   const history = useHistory();
+
+  const handleLogin = (userData) => {
+    setUserData(userData);
+    setLoggedIn(true);
+  }
 
   const tokenCheck = () => {
     const jwt = getToken();
@@ -41,28 +47,54 @@ const App = () => {
       return;
     }
 
-    auth.getContent(jwt).then((res) => {
+    auth.getContent(jwt)
+      .then((res) => {
       if (res) {
         const userData = {
-          email: res.email,
-          password: res.password,
+          email: res.data.email,
+          password: res.data.password,
         }
         setLoggedIn(true);
         setUserData(userData);
         history.push('/');
-        console.log(userData);
-      }
-    });
+      }})
+      .catch(err => console.log(err));
   }
 
-  React.useEffect(() => {
-    tokenCheck();
-  }, []);
+  const onLogin = (email, password) => {
+    auth.authorize(email, password)
+      .then((data) => {
+        if (!data){
+          return
+        }
+        if (data.token) {
+          setToken(data.token);
+          handleLogin(data.token);
+          history.push('/');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
-  const handleLogin = (userData) => {
-    setUserData(userData);
-    setLoggedIn(true);
-    console.log(userData);
+  const onRegister = (email, password) => {
+    auth.register(email, password)
+      .then((res) => {
+        if (res.statusCode !== 400) {
+          setIsRegister(true);
+          setTooltipPopupOpen(true);
+          history.push('/');
+        }})
+      .catch((err) => {
+        setIsRegister(false);
+        setTooltipPopupOpen(false);
+      });
+  }
+
+  const onSignOut = () => {
+    removeToken();
+    history.push('/signin');
   }
 
   const handleCardLike = (card) => {
@@ -105,6 +137,7 @@ const App = () => {
   };
 
   React.useEffect(() => {
+    tokenCheck();
     getUserAndCards();
   }, [])
 
@@ -129,10 +162,6 @@ const App = () => {
     setImagePopupOpen(true);
     setSelectedCard(card);
   };
-
-  const handleTooltipPopupClick = () => {
-    setTooltipPopupOpen(true);
-  }
 
   const closeAllPopups = () => {
     setEditAvatarPopupOpen(false);
@@ -194,12 +223,12 @@ const App = () => {
         <div className="page__cover">
           <Switch>
           <CurrentUserContext.Provider value={currentUser}>
-            <Header isLoading={isLoading} isRegister={isRegister} userData={userData}/>
-            <Route path="/sign-in">
-              <Login handleLogin={handleLogin} isLoading={isLoading}/>
+            <Header onSignOut={onSignOut} loggedIn={loggedIn} email={email}/>
+            <Route path="/signin">
+              <Login onLogin={onLogin} isLoading={isLoading}/>
             </Route>
-            <Route path="/sign-up">
-              <Register onTooltipPopup={handleTooltipPopupClick} isLoading={isLoading}/>
+            <Route path="/signup">
+              <Register onRegister={onRegister} isLoading={isLoading}/>
             </Route>
             <ProtectedRoute exact path="/" loggedIn="loggedIn">
               <Main
@@ -228,7 +257,7 @@ const App = () => {
 
             </ProtectedRoute>
             <Route>
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
             </Route>
           </CurrentUserContext.Provider>
           </Switch>

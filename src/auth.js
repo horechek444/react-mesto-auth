@@ -11,13 +11,13 @@ export const register = (email, password) => {
     },
     body: JSON.stringify({email, password})
   })
-    .then((response) => {
-      return response.json();
+    .then(response => {
+      let data = response.json();
+      if(response.ok) {
+        return data;
+      }
+      return data.then(Promise.reject.bind(Promise));
     })
-    .then((res) => {
-      return res;
-    })
-    .catch(err => console.log(err));
 };
 
 export const authorize = (email, password) => {
@@ -29,16 +29,22 @@ export const authorize = (email, password) => {
     },
     body: JSON.stringify({email, password})
   })
-    .then((response => response.json()))
+    .then((response => {
+      let data = response.json();
+      console.log(response.status);
+      if (response.ok) {
+        return data;
+      }
+      return data.then(Promise.reject.bind(Promise));
+    }))
     .then((data) => {
-      if (data.user){
-        setToken(data.jwt);
+      if (data.token){
+        setToken(data.token);
         return data;
       } else {
         return;
       }
     })
-    .catch(err => console.log(err))
 };
 
 export const getContent = (token) => {
