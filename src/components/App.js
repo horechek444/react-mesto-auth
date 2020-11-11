@@ -34,26 +34,22 @@ const App = () => {
   const [email, setEmail] = React.useState('');
   const history = useHistory();
 
+  const handleContentGetter = (token) => {
+    auth.getContent(token)
+      .then((res) => {
+        setEmail(res.data.email);
+        setLoggedIn(true);
+        history.push('/');
+      })
+      .catch(err => console.log(err));
+  }
+
   const tokenCheck = () => {
     const jwt = getToken();
-    console.log(jwt);
     if (!jwt) {
       return;
     }
-
-    auth.getContent(jwt)
-      .then((res) => {
-      if (res) {
-        const userData = {
-          _id: res.data._id,
-          email: res.data.email
-        }
-        console.log(userData);
-        setLoggedIn(true);
-        setEmail(userData.email);
-        history.push('/');
-      }})
-      .catch(err => console.log(err));
+    handleContentGetter(jwt);
   }
 
   React.useEffect(() => {
@@ -68,8 +64,7 @@ const App = () => {
         }
         if (data.token) {
           setToken(data.token);
-          setLoggedIn(true);
-          history.push('/');
+          handleContentGetter(data.token);
         }
       })
       .catch(err => {
@@ -81,23 +76,30 @@ const App = () => {
     auth.register(email, password)
       .then((res) => {
         if (res.statusCode !== 400) {
+          setEmail(res.data.email);
           setIsRegister(true);
           setLoggedIn(true);
           setTooltipPopupOpen(true);
           history.push('/');
+        } else {
+          setIsRegister(false);
+          setLoggedIn(false);
+          // setTooltipPopupOpen(true);
+          history.push('/signin');
         }
       })
       .catch((err) => {
         console.log(err);
-        setIsRegister(false);
-        setLoggedIn(false);
+        // setIsRegister(false);
+        // setLoggedIn(false);
         setTooltipPopupOpen(true);
-        history.push('/signin');
+        // history.push('/signin');
       });
   }
 
   const onSignOut = () => {
     removeToken();
+    setEmail('');
     setLoggedIn(false);
     history.push('/signin');
   }

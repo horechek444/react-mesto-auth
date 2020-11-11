@@ -13,7 +13,7 @@ const Login = ({onLogin, isLoading}) => {
   }
 
   return (
-    <section className="login register">
+    <section className="register">
       <h2 className="popup__title popup__title_type_white">Вход</h2>
         <FormContent handleSubmit={handleLoginSubmit} formName={formName} submitValue={submitValue}/>
     </section>

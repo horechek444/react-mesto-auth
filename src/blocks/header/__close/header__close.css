@@ -1,0 +1,21 @@
+.header__close {
+  display: none;
+}
+
+@media screen and (max-width: 425px) {
+  .header__close {
+    display: block;
+    position: absolute;
+    top: -6px;
+    right: -9px;
+    background-image: url("../../../images/close.svg");
+    background-position: center;
+    background-size: contain;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    padding: 0;
+    width: 42px;
+    height: 42px;
+  }
+}

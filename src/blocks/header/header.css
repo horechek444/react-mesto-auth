@@ -1,9 +1,13 @@
 @import url('./__logo/header__logo.css');
 @import url('./__cover/header__cover.css');
+@import url('./__cover/_type/header__cover_type_vertical.css');
 @import url('./__email/header__email.css');
 @import url('__email/_type/header__email_type_active.css');
 @import url('__button/header__button.css');
 @import url('__button/_type/header__button_type_log-out.css');
+@import url('__menu/header__menu.css');
+@import url('__close/header__close.css');
+@import url('__buttons/header__buttons.css');
 
 .header {
     display: flex;

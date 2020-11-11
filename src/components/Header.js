@@ -27,16 +27,20 @@ const Header = ({onSignOut, loggedIn, email}) => {
   }
 
   return (
-    <header className="header page__header">
+    <header className={`${loggedIn ? `header page__header header_type_active` : `header page__header`}`}>
       <a className="logo header__logo opacity" href="../../public/index.html">
         <img className="logo__image" src={logo} alt="Логотип сайта Место"/>
       </a>
-      <div className="header__cover">
+      <div className={`${loggedIn ? `header__cover header__cover_type_vertical` : `header__cover`}`}>
         <span
           className={`${loggedIn ? `header__email header__email_type_active` : `header__email`}`}>{email}</span>
         <button
           className={`${loggedIn ? `header__button header__button_type_log-out opacity` : `header__button opacity`}`}
           onClick={handleButtonClick}>{handleLinkName()}</button>
+      </div>
+      <div className="header__buttons">
+        <button className="header__menu"/>
+        <button className="header__close"/>
       </div>
     </header>
   );
