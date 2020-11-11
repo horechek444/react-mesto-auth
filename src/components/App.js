@@ -30,19 +30,13 @@ const App = () => {
 
   const [isTooltipPopupOpen, setTooltipPopupOpen] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
-  const [userData, setUserData] = React.useState({ email: '', password: ''});
   const [isRegister, setIsRegister] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const history = useHistory();
 
-  const handleLogin = (userData) => {
-    setUserData(userData);
-    setLoggedIn(true);
-  }
-
   const tokenCheck = () => {
     const jwt = getToken();
-
+    console.log(jwt);
     if (!jwt) {
       return;
     }
@@ -51,15 +45,20 @@ const App = () => {
       .then((res) => {
       if (res) {
         const userData = {
-          email: res.data.email,
-          password: res.data.password,
+          _id: res.data._id,
+          email: res.data.email
         }
+        console.log(userData);
         setLoggedIn(true);
-        setUserData(userData);
+        setEmail(userData.email);
         history.push('/');
       }})
       .catch(err => console.log(err));
   }
+
+  React.useEffect(() => {
+    tokenCheck();
+  }, []);
 
   const onLogin = (email, password) => {
     auth.authorize(email, password)
@@ -69,7 +68,7 @@ const App = () => {
         }
         if (data.token) {
           setToken(data.token);
-          handleLogin(data.token);
+          setLoggedIn(true);
           history.push('/');
         }
       })
@@ -83,17 +82,23 @@ const App = () => {
       .then((res) => {
         if (res.statusCode !== 400) {
           setIsRegister(true);
+          setLoggedIn(true);
           setTooltipPopupOpen(true);
           history.push('/');
-        }})
+        }
+      })
       .catch((err) => {
+        console.log(err);
         setIsRegister(false);
-        setTooltipPopupOpen(false);
+        setLoggedIn(false);
+        setTooltipPopupOpen(true);
+        history.push('/signin');
       });
   }
 
   const onSignOut = () => {
     removeToken();
+    setLoggedIn(false);
     history.push('/signin');
   }
 
@@ -139,7 +144,7 @@ const App = () => {
   React.useEffect(() => {
     tokenCheck();
     getUserAndCards();
-  }, [])
+  }, []);
 
   const handleEditAvatarClick = () => {
     setEditAvatarPopupOpen(true);

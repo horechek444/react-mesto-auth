@@ -1,13 +1,10 @@
 import React from "react";
 import logo from '../images/logo.svg';
-import {removeToken} from "../utils/token";
-import {Link, useLocation } from 'react-router-dom';
-import * as auth from "../auth";
-// import {getContent} from "../auth";
-// import * as auth from '../auth.js';
+import {useHistory, useLocation} from 'react-router-dom';
 
-const Header = ({onSignOut, loggedIn, userData}) => {
+const Header = ({onSignOut, loggedIn, email}) => {
   const location = useLocation();
+  const history = useHistory();
 
   const handleLinkName = () => {
     if (location.pathname === '/signin') {
@@ -19,14 +16,13 @@ const Header = ({onSignOut, loggedIn, userData}) => {
     }
   }
 
-  const handleLink = () => {
+  const handleButtonClick = () => {
     if (handleLinkName() === 'Регистрация') {
-      return '/signup';
+      history.push('/signup');
     } else if (handleLinkName() === 'Войти') {
-      return '/signin';
+      history.push('/signin');
     } else {
-      removeToken();
-      return '/signin';
+      onSignOut();
     }
   }
 
@@ -36,9 +32,11 @@ const Header = ({onSignOut, loggedIn, userData}) => {
         <img className="logo__image" src={logo} alt="Логотип сайта Место"/>
       </a>
       <div className="header__cover">
-        <span className={`${loggedIn ? `header__email header__email_type_active` : `header__email`}`}>{}</span>
-        <Link to={handleLink()}
-              className={`${loggedIn ? `header__link header__link_type_log-out opacity` : `header__link opacity`}`}>{handleLinkName()}</Link>
+        <span
+          className={`${loggedIn ? `header__email header__email_type_active` : `header__email`}`}>{email}</span>
+        <button
+          className={`${loggedIn ? `header__button header__button_type_log-out opacity` : `header__button opacity`}`}
+          onClick={handleButtonClick}>{handleLinkName()}</button>
       </div>
     </header>
   );
