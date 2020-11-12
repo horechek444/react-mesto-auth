@@ -2,7 +2,7 @@
     position: relative;
     min-width: 150px;
     min-height: 50px;
-    border: 2px solid #ffffff;
+    border: 2px solid #FFFFFF;
     border-radius: 2px;
     background-color: #000000;
     transition: opacity 0.3s ease-in;
@@ -14,7 +14,7 @@
     content: '';
     width: 2px;
     height: 22px;
-    background-color: #ffffff;
+    background-color: #FFFFFF;
     top: 12px;
     left: 50%;
 }

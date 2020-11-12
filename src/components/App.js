@@ -41,7 +41,6 @@ const App = () => {
         setLoggedIn(true);
         history.push('/');
       })
-      .catch(err => console.log(err));
   }
 
   const tokenCheck = () => {
@@ -49,7 +48,12 @@ const App = () => {
     if (!jwt) {
       return;
     }
-    handleContentGetter(jwt);
+    handleContentGetter(jwt)
+      .catch((err) => {
+        if (err === 401) {
+          console.log('Произошла ошибка, токен не был передан, был передан не в том формате или не является корректным')
+        }
+      });
   }
 
   React.useEffect(() => {
@@ -59,16 +63,20 @@ const App = () => {
   const onLogin = (email, password) => {
     auth.authorize(email, password)
       .then((data) => {
-        if (!data){
+        if (!data) {
           return
         }
         if (data.token) {
           setToken(data.token);
-          handleContentGetter(data.token);
+          handleContentGetter(data.token)
         }
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err) => {
+        if (err === 400) {
+          console.log('Произошла ошибка, не передано одно из полей');
+        } else if (err === 401) {
+          console.log('Произошла ошибка, пользователь с данным email не найден');
+        }
       });
   }
 
@@ -76,24 +84,17 @@ const App = () => {
     auth.register(email, password)
       .then((res) => {
         if (res.statusCode !== 400) {
-          setEmail(res.data.email);
           setIsRegister(true);
-          setLoggedIn(true);
           setTooltipPopupOpen(true);
-          history.push('/');
-        } else {
-          setIsRegister(false);
-          setLoggedIn(false);
-          // setTooltipPopupOpen(true);
           history.push('/signin');
         }
       })
       .catch((err) => {
-        console.log(err);
-        // setIsRegister(false);
-        // setLoggedIn(false);
+        setIsRegister(false);
         setTooltipPopupOpen(true);
-        // history.push('/signin');
+        if (err === 400) {
+          console.log('Произошла ошибка, некорректно заполнено одно из полей')
+        }
       });
   }
 
@@ -226,9 +227,9 @@ const App = () => {
   };
 
   return (
-      <div className="page">
-        <div className="page__cover">
-          <Switch>
+    <div className="page">
+      <div className="page__cover">
+        <Switch>
           <CurrentUserContext.Provider value={currentUser}>
             <Header onSignOut={onSignOut} loggedIn={loggedIn} email={email}/>
             <Route path="/signin">
@@ -264,13 +265,13 @@ const App = () => {
 
             </ProtectedRoute>
             <Route>
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+              {loggedIn ? <Redirect to="/"/> : <Redirect to="/signin"/>}
             </Route>
           </CurrentUserContext.Provider>
-          </Switch>
-          <InfoTooltip isRegister={isRegister} isOpen={isTooltipPopupOpen} onClose={closeAllPopups}/>
-        </div>
+        </Switch>
+        <InfoTooltip isRegister={isRegister} isOpen={isTooltipPopupOpen} onClose={closeAllPopups}/>
       </div>
+    </div>
 
   );
 }

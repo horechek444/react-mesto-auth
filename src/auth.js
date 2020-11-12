@@ -13,10 +13,10 @@ export const register = (email, password) => {
   })
     .then(response => {
       let data = response.json();
-      if(response.ok) {
-        return data;
+      if(!response.ok) {
+        return Promise.reject(response.status);
       }
-      return data.then(Promise.reject.bind(Promise));
+      return data;
     })
 };
 
@@ -31,11 +31,10 @@ export const authorize = (email, password) => {
   })
     .then((response => {
       let data = response.json();
-      console.log(response.status);
-      if (response.ok) {
-        return data;
+      if (!response.ok) {
+        return Promise.reject(response.status);
       }
-      return data.then(Promise.reject.bind(Promise));
+      return data;
     }))
     .then((data) => {
       if (data.token){
@@ -56,6 +55,12 @@ export const getContent = (token) => {
       'Authorization': `Bearer ${token}`,
     }
   })
-    .then(res => res.json())
+    .then((res => {
+      let data = res.json();
+      if (!res.ok) {
+        return Promise.reject(res.status);
+      }
+      return data;
+    }))
 };
 
