@@ -35,7 +35,7 @@ const App = () => {
   const history = useHistory();
 
   const handleContentGetter = (token) => {
-    auth.getContent(token)
+    return auth.getContent(token)
       .then((res) => {
         setEmail(res.data.email);
         setLoggedIn(true);
